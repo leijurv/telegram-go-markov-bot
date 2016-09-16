@@ -9,9 +9,10 @@ import (
 	"strings"
 )
 
+const End = "@END@"
+
 var (
-	END         = "@END@"
-	START       = [2]string{"@START 1@", "@START 2@"}
+	Start = [2]string{"@START_1@", "@START_2@"}
 	punctuation = map[string]bool{
 		".": true,
 		",": true,
@@ -33,11 +34,11 @@ func generateMarkovResponse(inputText string) string {
 		previousItems[1] = seed[1]
 		response = seed[0] + " " + seed[1]
 	} else if len(seed) == 1 {
-		previousItems[0] = START[1]
+		previousItems[0] = Start[1]
 		previousItems[1] = seed[0]
 		response = seed[0]
 	} else {
-		previousItems = START
+		previousItems = Start
 	}
 	if _, ok := DataDict[previousItems]; !ok {
 		return "Error! I don't understand that =("
@@ -48,7 +49,7 @@ func generateMarkovResponse(inputText string) string {
 			return response
 		}
 		nextItem := options[rand.Intn(len(options))]
-		if nextItem == END {
+		if nextItem == End {
 			return response
 		}
 		if _, isPunctuation := punctuation[nextItem]; isPunctuation {
@@ -61,7 +62,7 @@ func generateMarkovResponse(inputText string) string {
 
 func trainMessage(msg string) {
 	items := processText(preprocessText(msg)) // Split by whitespace to get individual words
-	previousItems := START
+	previousItems := Start
 	if len(items) < 1 {
 		return
 	}
@@ -73,7 +74,7 @@ func trainMessage(msg string) {
 		previousItems[0] = previousItems[1]
 		previousItems[1] = item
 	}
-	DataDict[previousItems] = append(DataDict[previousItems], END)
+	DataDict[previousItems] = append(DataDict[previousItems], End)
 }
 
 func loadDataset(path string) (DataMapType, error) {
@@ -111,12 +112,12 @@ func saveDataset(path string) error {
 	return nil
 }
 
+// TODO
 func importFile(fp string) {
-	// TODO
 }
 
+// TODO: Add more here to clean up punctuation, etc.
 func preprocessText(text string) string {
-	// TODO: Add more here to clean up punctuation, etc.
 	return strings.ToLower(text)
 }
 
