@@ -119,8 +119,22 @@ func saveDataset(path string) error {
 	return ioutil.WriteFile(path, b.Bytes(), 0644)
 }
 
-func importFile(fp string) {
-	// TODO
+func importFile(path string) error {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return err
+	}
+
+	fileBytes, err := ioutil.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	msgSplt := bytes.Split(fileBytes, []byte("\n"))
+
+	for _, msg := range msgSplt {
+		trainMessage(string(msg))
+	}
+	return nil
 }
 
 func preprocessText(text string) string {
