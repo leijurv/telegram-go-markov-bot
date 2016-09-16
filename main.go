@@ -109,9 +109,9 @@ func runBot(token string, mode bool) error {
 
 		if update.Message.IsCommand() {
 			go handleCommand(bot, update)
+		} else {
+			go trainMessage(update.Message.Text)
 		}
-
-		go trainMessage(update.Message.Text)
 	}
 	return nil
 }
